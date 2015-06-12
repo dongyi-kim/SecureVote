@@ -77,7 +77,7 @@ namespace SecureVote
                 String res_plain = AESDecrypt256(res_cipher, Session_Key);
                 JsonTextParser parser = new JsonTextParser();
                 //encrypted jspm
-                col = parser.Parse(res_plain);
+                col = (JsonObjectCollection)parser.Parse(res_plain);
                 RN = (String)col["RN"].GetValue();
                 return true;
             }
@@ -110,7 +110,7 @@ namespace SecureVote
                 String res_plain = AESDecrypt256(res_cipher, Session_Key);
                 JsonTextParser parser = new JsonTextParser();
                 //encrypted jspm
-                return parser.Parse(res_plain);
+                return (JsonObjectCollection)parser.Parse(res_plain);
             }
             catch (Exception ex)
             {
@@ -119,7 +119,7 @@ namespace SecureVote
             return null;
         }
 
-        public static bool Req_Choice(String strID, String VoteID, String strChoiceIdx)
+        public static bool Req_Choice(String strID, String strVoteID, String strChoiceIdx)
         {
             try
             {
@@ -137,7 +137,6 @@ namespace SecureVote
                 String res = (String)col["Result"].GetValue();
                 if (res.Equals("FALSE"))
                     throw new Exception("Failed");
-
 
             }
             catch (Exception ex)
