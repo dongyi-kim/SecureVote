@@ -32,6 +32,9 @@ namespace SecureVote
                 Kp = (String)col["Kp"].GetValue();
                 RN = (String)col["RN"].GetValue();
 
+                Console.WriteLine("[OK] Req_PublicKey Done");
+                Console.WriteLine(" - (Kp) " + col.ToString());
+
                 return true;
             }
             catch (Exception ex)
@@ -53,7 +56,7 @@ namespace SecureVote
                 {
                     hashed_RN = mySHA256.ComputeHash(hashed_RN);
                 }
-                Session_Key = Utility.BytesToHexString(hashed_RN);
+                Session_Key = Utility.BytesToHexString(hashed_RN).Substring(0,32);
 
                 JsonObjectCollection json = new JsonObjectCollection();
                 json.Add(new JsonStringValue("user_id", strID));
@@ -100,6 +103,8 @@ namespace SecureVote
 
                 Dictionary<String, String> dic = new Dictionary<string, string>();
                 dic["cipher"] = AESEncrypt256(json.ToString(), Session_Key);
+                dic["hmac"] = getSHA(strID + Session_Key);
+                dic["user_id"] = strID;
 
                 JsonObjectCollection col = (JsonObjectCollection)PostRequest("vote_info", dic);
                 String res = (String)col["Result"].GetValue();
@@ -118,7 +123,12 @@ namespace SecureVote
             }
             return null;
         }
-
+        private static String getSHA(String plain)
+        {
+            SHA256 mySHA256 = SHA256Managed.Create();
+            Byte[] bytes = mySHA256.ComputeHash(Utility.UTF8ToBytes(plain));
+            return Utility.BytesToHexString(bytes);
+        }
         public static bool Req_Choice(String strID, String strVoteID, String strChoiceIdx)
         {
             try
@@ -128,9 +138,13 @@ namespace SecureVote
                 json.Add(new JsonStringValue("user_id", strID));
                 json.Add(new JsonStringValue("vote_id", strVoteID));
                 json.Add(new JsonStringValue("choice_idx", strChoiceIdx));
+                json.Add(new JsonStringValue("RN", RN));
+
 
                 Dictionary<String, String> dic = new Dictionary<string, string>();
                 dic["cipher"] = AESEncrypt256(json.ToString(), Session_Key);
+                dic["hmac"] = getSHA(strID + Session_Key);
+                dic["user_id"] = strID;
 
                 JsonObjectCollection col = (JsonObjectCollection)PostRequest("choice", dic);
 
@@ -148,9 +162,14 @@ namespace SecureVote
 
         private static String RSAEncrypt(string getValue, string pubKey)
         {
+            return getValue;
+
             System.Security.Cryptography.RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(); //암호화
+            System.Security.Cryptography.RSAParameters rsaParam = rsa.ExportParameters(false);
+            rsaParam.Modulus = Convert.FromBase64String(System.IO.File.ReadAllText(@"C:\keys\public_key.pem").Replace("-----BEGIN PUBLIC KEY-----", "").Replace("-----END PUBLIC KEY-----", ""));
+            rsa.ImportParameters(rsaParam);
             rsa.FromXmlString(pubKey);
- 
+            
             //암호화할 문자열을 UFT8인코딩
             byte[] inbuf = (new UTF8Encoding()).GetBytes(getValue);
  
@@ -167,7 +186,7 @@ namespace SecureVote
             aes.KeySize = 256;
             aes.BlockSize = 128;
             aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
+            aes.Padding = PaddingMode.Zeros;
             aes.Key = Encoding.UTF8.GetBytes(key);
             aes.IV = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -184,7 +203,7 @@ namespace SecureVote
                 xBuff = ms.ToArray();
             }
 
-            String Output = Convert.ToBase64String(xBuff);
+            String Output = Utility.BytesToHexString(xBuff);//Convert.ToBase64String(xBuff);
             return Output;
         }
 
@@ -196,7 +215,7 @@ namespace SecureVote
             aes.KeySize = 256;
             aes.BlockSize = 128;
             aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
+            aes.Padding = PaddingMode.Zeros;
             aes.Key = Encoding.UTF8.GetBytes(key);
             aes.IV = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -206,7 +225,7 @@ namespace SecureVote
             {
                 using (var cs = new CryptoStream(ms, decrypt, CryptoStreamMode.Write))
                 {
-                    byte[] xXml = Convert.FromBase64String(Input);
+                    byte[] xXml = Utility.HexStringToBytes(Input);//Convert.from FromBase64String(Input);
                     cs.Write(xXml, 0, xXml.Length);
                 }
 
@@ -221,7 +240,7 @@ namespace SecureVote
 
         private static Object PostRequest(String api, Dictionary<String, String> dic)
         {
-            String strUri = URL + "/" + api;
+            String strUri = URL + "/api/" + api;
 
             // POST, GET 보낼 데이터 입력
             StringBuilder dataParams = new StringBuilder();

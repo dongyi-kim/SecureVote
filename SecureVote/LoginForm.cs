@@ -35,6 +35,21 @@ namespace SecureVote
        
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            try
+            {
+                if (txtID.Text.Length < 3 || 10 < txtID.Text.Length)
+                    throw new Exception("아이디는 3~10글자이어야 합니다.");
+                if (txtPW.Text.Length < 5 || 20 < txtPW.Text.Length)
+                    throw new Exception("비밀번호는 5~20글자이어야 합니다.");
+                if (Convert.ToInt32(txtVoteID.Text) <= 0)
+                    throw new Exception("투표 번호가 잘못되었습니다.");
+                
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
             isSuccess = SecureProtocol.Req_PublicKey(txtID.Text)
                     && SecureProtocol.Req_Auth(txtID.Text, txtPW.Text);
             if (isSuccess)
