@@ -71,11 +71,12 @@ namespace SecureVote
                 String res = (String)col["Result"].GetValue();
                 if (res.Equals("FALSE"))
                     throw new Exception("Failed");
+
                 //cipher
                 String res_cipher = (String)col["Cipher"].GetValue();
                 String res_plain = AESDecrypt256(res_cipher, Session_Key);
                 JsonTextParser parser = new JsonTextParser();
-
+                //encrypted jspm
                 col = parser.Parse(res_plain);
                 RN = (String)col["RN"].GetValue();
                 return true;
@@ -87,35 +88,56 @@ namespace SecureVote
             return false;
         }
 
-        public static bool Req_Info(String strVoteID)
+        public static JsonObjectCollection Req_Info(String strID, String strVoteID)
         {
 
             try
             {
+                JsonObjectCollection json = new JsonObjectCollection();
+                json.Add(new JsonStringValue("user_id", strID));
+                json.Add(new JsonStringValue("vote_id", strVoteID));
+                json.Add(new JsonStringValue("RN", RN));
+
+                Dictionary<String, String> dic = new Dictionary<string, string>();
+                dic["cipher"] = AESEncrypt256(json.ToString(), Session_Key);
 
                 JsonObjectCollection col = (JsonObjectCollection)PostRequest("vote_info", dic);
                 String res = (String)col["Result"].GetValue();
                 if (res.Equals("FALSE"))
                     throw new Exception("Failed");
 
+                String res_cipher = (String)col["Cipher"].GetValue();
+                String res_plain = AESDecrypt256(res_cipher, Session_Key);
+                JsonTextParser parser = new JsonTextParser();
+                //encrypted jspm
+                return parser.Parse(res_plain);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("[!] Failed in Req_Info()");
             }
-            return false;
+            return null;
         }
 
-        public static bool Req_Choice(String strChoiceIdx)
+        public static bool Req_Choice(String strID, String VoteID, String strChoiceIdx)
         {
-
             try
             {
 
+                JsonObjectCollection json = new JsonObjectCollection();
+                json.Add(new JsonStringValue("user_id", strID));
+                json.Add(new JsonStringValue("vote_id", strVoteID));
+                json.Add(new JsonStringValue("choice_idx", strChoiceIdx));
+
+                Dictionary<String, String> dic = new Dictionary<string, string>();
+                dic["cipher"] = AESEncrypt256(json.ToString(), Session_Key);
+
                 JsonObjectCollection col = (JsonObjectCollection)PostRequest("choice", dic);
+
                 String res = (String)col["Result"].GetValue();
                 if (res.Equals("FALSE"))
                     throw new Exception("Failed");
+
 
             }
             catch (Exception ex)
