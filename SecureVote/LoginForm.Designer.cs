@@ -32,7 +32,7 @@
             this.txtID = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtPW = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txtVoteID = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnLogin = new System.Windows.Forms.Button();
@@ -72,12 +72,12 @@
             this.txtPW.Size = new System.Drawing.Size(216, 21);
             this.txtPW.TabIndex = 3;
             // 
-            // textBox3
+            // txtVoteID
             // 
-            this.textBox3.Location = new System.Drawing.Point(75, 13);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(91, 21);
-            this.textBox3.TabIndex = 5;
+            this.txtVoteID.Location = new System.Drawing.Point(75, 13);
+            this.txtVoteID.Name = "txtVoteID";
+            this.txtVoteID.Size = new System.Drawing.Size(91, 21);
+            this.txtVoteID.TabIndex = 5;
             // 
             // label3
             // 
@@ -118,7 +118,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 170);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.txtVoteID);
             this.Controls.Add(this.label3);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "LoginForm";
@@ -137,7 +137,7 @@
         private System.Windows.Forms.TextBox txtID;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtPW;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txtVoteID;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnLogin;

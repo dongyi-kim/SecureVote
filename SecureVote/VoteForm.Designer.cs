@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.btnOkay = new System.Windows.Forms.Button();
             this.richText = new System.Windows.Forms.RichTextBox();
+            this.cmb_choice = new System.Windows.Forms.ComboBox();
+            this.btnOkay = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,24 +45,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "투표 정보";
             // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(13, 276);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(234, 20);
-            this.comboBox1.TabIndex = 1;
-            // 
-            // btnOkay
-            // 
-            this.btnOkay.Location = new System.Drawing.Point(254, 273);
-            this.btnOkay.Name = "btnOkay";
-            this.btnOkay.Size = new System.Drawing.Size(75, 23);
-            this.btnOkay.TabIndex = 2;
-            this.btnOkay.Text = "결정";
-            this.btnOkay.UseVisualStyleBackColor = true;
-            // 
             // richText
             // 
             this.richText.Location = new System.Drawing.Point(7, 21);
@@ -72,13 +54,32 @@
             this.richText.TabIndex = 0;
             this.richText.Text = "";
             // 
+            // cmb_choice
+            // 
+            this.cmb_choice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_choice.FormattingEnabled = true;
+            this.cmb_choice.Location = new System.Drawing.Point(13, 276);
+            this.cmb_choice.Name = "cmb_choice";
+            this.cmb_choice.Size = new System.Drawing.Size(234, 20);
+            this.cmb_choice.TabIndex = 1;
+            // 
+            // btnOkay
+            // 
+            this.btnOkay.Location = new System.Drawing.Point(254, 273);
+            this.btnOkay.Name = "btnOkay";
+            this.btnOkay.Size = new System.Drawing.Size(75, 23);
+            this.btnOkay.TabIndex = 2;
+            this.btnOkay.Text = "결정";
+            this.btnOkay.UseVisualStyleBackColor = true;
+            this.btnOkay.Click += new System.EventHandler(this.btnOkay_Click);
+            // 
             // VoteForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(347, 307);
             this.Controls.Add(this.btnOkay);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cmb_choice);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "VoteForm";
@@ -92,7 +93,7 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cmb_choice;
         private System.Windows.Forms.Button btnOkay;
         private System.Windows.Forms.RichTextBox richText;
     }
